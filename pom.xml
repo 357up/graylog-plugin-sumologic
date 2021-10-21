@@ -118,6 +118,12 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.sumologic.plugins.http/sumologic-http-core -->
+        <dependency>
+            <groupId>com.sumologic.plugins.http</groupId>
+            <artifactId>sumologic-http-core</artifactId>
+            <version>1.5</version>
+        </dependency>
     </dependencies>
 
     <build>
