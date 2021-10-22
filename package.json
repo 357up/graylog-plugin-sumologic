@@ -1,4 +1,5 @@
 {
+
   "name": "SumoLogicOutput",
   "version": "1.0.0-SNAPSHOT",
   "description": "",
@@ -16,6 +17,7 @@
     "graylog"
   ],
   "author": "Viesturs Eihentāls <viesturs.eihentals@uniweb.eu>",
+
   "license": "MIT",
   "eslintConfig": {
     "extends": "graylog"
