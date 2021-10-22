@@ -93,9 +93,9 @@ public class SumoLogicOutput implements MessageOutput {
     private static final String maxFlushIntervalMs = "10000";    // Maximum interval between flushes (ms)
     private static final String flushingAccuracyMs = "250";      // How often the flusher thread looks into the message queue (ms)
 
-    private static final String sourceName = "null";
-    private static final String sourceHost = "null";
-    private static final String sourceCategory = "null";
+    private static final String Name = "null";
+    private static final String Host = "null";
+    private static final String Category = "null";
 
     private static final String maxQueueSizeBytes = "1000000";
 
@@ -138,9 +138,9 @@ public class SumoLogicOutput implements MessageOutput {
         sender.setConnectionTimeoutMs(configuration.getInt(connectionTimeoutMs));
         sender.setSocketTimeoutMs(configuration.getInt(socketTimeoutMs));
         sender.setUrl(configuration.getString(url));
-        sender.setSourceHost(configuration.getString(sourceHost));
-        sender.setSourceName(configuration.getString(sourceName));
-        sender.setSourceCategory(configuration.getString(sourceCategory));
+        sender.setSourceHost(configuration.getString(Host));
+        sender.setSourceName(configuration.getString(Name));
+        sender.setSourceCategory(configuration.getString(Category));
         sender.setProxySettings(new ProxySettings(
             proxyHost,
             Integer.parseInt(proxyPort),
@@ -148,7 +148,7 @@ public class SumoLogicOutput implements MessageOutput {
             proxyUser,
             proxyPassword,
             proxyDomain));
-        sender.setClientHeaderValue(configuration.getString(CLIENT_NAME));
+        sender.setClientHeaderValue(CLIENT_NAME);
         sender.setRetryableHttpCodeRegex(configuration.getString(retryableHttpCodeRegex));
         sender.init();
 
@@ -182,7 +182,7 @@ public class SumoLogicOutput implements MessageOutput {
     @Override
     public void write(List<Message> messages) throws Exception {
         for (Message m: messages) {
-            queue.add(m.getMessage());
+            queue.add(m.toString());
         }
     }
                 /*  && c.stringIsSet(proxyHost)
@@ -195,9 +195,9 @@ public class SumoLogicOutput implements MessageOutput {
 
     public boolean checkConfiguration(Configuration c) {
         return c.stringIsSet(url)
-                && c.stringIsSet(sourceName)
-                && c.stringIsSet(sourceHost)
-                && c.stringIsSet(sourceCategory)
+                && c.stringIsSet(Name)
+                && c.stringIsSet(Host)
+                && c.stringIsSet(Category)
                 && c.intIsSet(retryIntervalMs)
                 && c.intIsSet(connectionTimeoutMs)
                 && c.intIsSet(socketTimeoutMs)
@@ -255,19 +255,19 @@ public class SumoLogicOutput implements MessageOutput {
             );
 
             configurationRequest.addField(new TextField(
-                sourceName, "Source Name", "Http Input",
+                Name, "Source Name", "",
                 "Source name to appear when searching on Sumo Logic by _sourceName",
                 ConfigurationField.Optional.OPTIONAL)
             );
 
             configurationRequest.addField(new TextField(
-                sourceHost, "Client IP Address", "127.0.0.1",
+                Host, "Client IP Address", "",
                 "Source host to appear when searching on Sumo Logic by _sourceHost",
                 ConfigurationField.Optional.OPTIONAL)
             );
 
             configurationRequest.addField(new TextField(
-                sourceCategory, "Source Category", "Http Input",
+                Category, "Source Category", "",
                 "Source category to appear when searching on Sumo Logic by _sourceCategory",
                 ConfigurationField.Optional.OPTIONAL)
             );
