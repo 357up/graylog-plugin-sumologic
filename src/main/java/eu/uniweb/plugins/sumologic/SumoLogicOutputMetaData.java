@@ -14,7 +14,7 @@
  * along with this program. If not, see
  * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
-package eu.uniweb.sumologic;
+package eu.uniweb.plugins.sumologic;
 
 import org.graylog2.plugin.PluginMetaData;
 import org.graylog2.plugin.ServerStatus;
@@ -32,7 +32,7 @@ public class SumoLogicOutputMetaData implements PluginMetaData {
 
     @Override
     public String getUniqueId() {
-        return "eu.uniweb.sumologic.SumoLogicOutputPlugin";
+        return "eu.uniweb.plugins.sumologic.SumoLogicOutputPlugin";
     }
 
     @Override

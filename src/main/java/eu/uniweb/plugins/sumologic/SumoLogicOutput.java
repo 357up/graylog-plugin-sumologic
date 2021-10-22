@@ -14,7 +14,7 @@
  * along with this program. If not, see
  * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
-package eu.uniweb.sumologic;
+package eu.uniweb.plugins.sumologic;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
