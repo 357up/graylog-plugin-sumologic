@@ -17,6 +17,9 @@
 package eu.uniweb.sumologic;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
 import org.graylog2.plugin.outputs.MessageOutput;
 import org.graylog2.plugin.outputs.MessageOutputConfigurationException;
 import org.graylog2.plugin.streams.Stream;
@@ -30,9 +33,6 @@ import org.graylog2.plugin.Message;
 import org.graylog2.plugin.inputs.annotations.ConfigClass;
 import org.graylog2.plugin.inputs.annotations.FactoryClass;
 
-import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
-
 import com.sumologic.http.aggregation.SumoBufferFlusher;
 import com.sumologic.http.queue.BufferWithEviction;
 import com.sumologic.http.queue.BufferWithFifoEviction;
@@ -43,7 +43,6 @@ import com.sumologic.http.sender.SumoHttpSender;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Logger;
 import java.io.IOException;
 
 
@@ -75,8 +74,9 @@ public class SumoLogicOutput implements MessageOutput {
         maxQueueSizeBytes	    No	        1000000	            Maximum capacity (in bytes) of the message queue
         flushAllBeforeStopping	No	        true	            Flush all messages before stopping regardless of flushingAccuracyMs Be sure to call loggerContext.stop(); when your application stops.
         retryableHttpCodeRegex	No	        ^5.*	            Regular expression specifying which HTTP error code(s) should be retried during sending. By default, all 5xx error codes will be retried.
-     */
-    private static final String url = null;
+     https://collectors.de.sumologic.com/receiver/v1/http/ZaVnC4dhaV2TTTY7IVxv_w0w3m0y4ZRQ1Vc8MTo2Wbut53Qn4hdiwHEBrzgJVXMo9Im278UtbjEDyh80-HkZFzde_1cDPqIHAiN6Zdn3mb_jiKq-2tD7_w==
+        */
+    private static final String url = "URL";
 
     private static final String proxyHost = null;
     private static final String proxyPort = "-1";
@@ -94,9 +94,9 @@ public class SumoLogicOutput implements MessageOutput {
     private static final String maxFlushIntervalMs = "10000";    // Maximum interval between flushes (ms)
     private static final String flushingAccuracyMs = "250";      // How often the flusher thread looks into the message queue (ms)
 
-    private static final String sourceName = null;
-    private static final String sourceHost = null;
-    private static final String sourceCategory = null;
+    private static final String sourceName = "null";
+    private static final String sourceHost = "null";
+    private static final String sourceCategory = "null";
 
     private static final String maxQueueSizeBytes = "1000000";
 
@@ -118,7 +118,7 @@ public class SumoLogicOutput implements MessageOutput {
 
         // Initialize queue
         if (queue == null) {
-            queue = new BufferWithFifoEviction<String>(Long.parseLong(maxQueueSizeBytes), new CostBoundedConcurrentQueue.CostAssigner<String>() {
+            queue = new BufferWithFifoEviction<String>(Long.valueOf(configuration.getInt(maxQueueSizeBytes)), new CostBoundedConcurrentQueue.CostAssigner<String>() {
                 @Override
                 public long cost(String e) {
                     // Note: This is only an estimate for total byte usage, since in UTF-8 encoding,
@@ -127,7 +127,7 @@ public class SumoLogicOutput implements MessageOutput {
                 }
             });
         } else {
-            queue.setCapacity(Long.parseLong(maxQueueSizeBytes));
+            queue.setCapacity(Long.valueOf(configuration.getInt(maxQueueSizeBytes)));
         }
 
         // Initialize sender
@@ -135,13 +135,13 @@ public class SumoLogicOutput implements MessageOutput {
             sender = new SumoHttpSender();
         }
 
-        sender.setRetryIntervalMs(Long.parseLong(retryIntervalMs));
-        sender.setConnectionTimeoutMs(Integer.parseInt(connectionTimeoutMs));
-        sender.setSocketTimeoutMs(Integer.parseInt(socketTimeoutMs));
-        sender.setUrl(url);
-        sender.setSourceHost(sourceHost);
-        sender.setSourceName(sourceName);
-        sender.setSourceCategory(sourceCategory);
+        sender.setRetryIntervalMs(Long.valueOf(configuration.getInt(retryIntervalMs)));
+        sender.setConnectionTimeoutMs(configuration.getInt(connectionTimeoutMs));
+        sender.setSocketTimeoutMs(configuration.getInt(socketTimeoutMs));
+        sender.setUrl(configuration.getString(url));
+        sender.setSourceHost(configuration.getString(sourceHost));
+        sender.setSourceName(configuration.getString(sourceName));
+        sender.setSourceCategory(configuration.getString(sourceCategory));
         sender.setProxySettings(new ProxySettings(
             proxyHost,
             Integer.parseInt(proxyPort),
@@ -149,8 +149,8 @@ public class SumoLogicOutput implements MessageOutput {
             proxyUser,
             proxyPassword,
             proxyDomain));
-        sender.setClientHeaderValue(CLIENT_NAME);
-        sender.setRetryableHttpCodeRegex(retryableHttpCodeRegex);
+        sender.setClientHeaderValue(configuration.getString(CLIENT_NAME));
+        sender.setRetryableHttpCodeRegex(configuration.getString(retryableHttpCodeRegex));
         sender.init();
 
         // Initialize flusher
@@ -158,9 +158,9 @@ public class SumoLogicOutput implements MessageOutput {
             flusher.stop();
         }
 
-        flusher = new SumoBufferFlusher(Long.parseLong(flushingAccuracyMs),
-            Long.parseLong(messagesPerRequest),
-            Long.parseLong(maxFlushIntervalMs),
+        flusher = new SumoBufferFlusher(Long.valueOf(flushingAccuracyMs),
+            Long.valueOf(messagesPerRequest),
+            Long.valueOf(maxFlushIntervalMs),
             sender,
             queue,
             Boolean.parseBoolean(flushAllBeforeStopping));
@@ -191,7 +191,8 @@ public class SumoLogicOutput implements MessageOutput {
                 && c.stringIsSet(proxyAuth)
                 && c.stringIsSet(proxyUser)
                 && c.stringIsSet(proxyPassword)
-                && c.stringIsSet(proxyDomain) */
+                && c.stringIsSet(proxyDomain)
+                && c.stringIsSet(flushAllBeforeStopping) */
 
     public boolean checkConfiguration(Configuration c) {
         return c.stringIsSet(url)
@@ -205,7 +206,6 @@ public class SumoLogicOutput implements MessageOutput {
                 && c.intIsSet(maxFlushIntervalMs)
                 && c.intIsSet(flushingAccuracyMs)
                 && c.intIsSet(maxQueueSizeBytes)
-                && c.stringIsSet(flushAllBeforeStopping)
                 && c.stringIsSet(retryableHttpCodeRegex);
     }
 
@@ -262,7 +262,7 @@ public class SumoLogicOutput implements MessageOutput {
             );
 
             configurationRequest.addField(new TextField(
-                sourceHost, "Client IP Address", "",
+                sourceHost, "Client IP Address", "127.0.0.1",
                 "Source host to appear when searching on Sumo Logic by _sourceHost",
                 ConfigurationField.Optional.OPTIONAL)
             );
@@ -315,12 +315,12 @@ public class SumoLogicOutput implements MessageOutput {
                 ConfigurationField.Optional.OPTIONAL)
             );
 
-            final Map<String, String> forceFlush = ImmutableMap.of("true", "false");
+            /* final Map<String, String> forceFlush = ImmutableMap.of("true", "false");
             configurationRequest.addField(new DropdownField(
                 flushAllBeforeStopping, "Flush Queue when Stopping", "true", forceFlush,
                 "Flush all messages before stopping regardless of flushingAccuracyMs.",
                 ConfigurationField.Optional.OPTIONAL)
-            );
+            ); */
 
             configurationRequest.addField(new TextField(
                 retryableHttpCodeRegex, "Retry on HTTP Status Codes (regex)", "^5.*",
