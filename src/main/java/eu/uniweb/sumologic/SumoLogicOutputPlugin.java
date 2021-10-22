@@ -15,6 +15,7 @@
  * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
 package eu.uniweb.sumologic;
+
 import org.graylog2.plugin.Plugin;
 import org.graylog2.plugin.PluginMetaData;
 import org.graylog2.plugin.PluginModule;
@@ -25,14 +26,14 @@ import java.util.Collections;
 /**
  * Implement the Plugin interface here.
  */
-public class SumoLogicForwarderPlugin implements Plugin {
+public class SumoLogicOutputPlugin implements Plugin {
     @Override
     public PluginMetaData metadata() {
-        return new SumoLogicForwarderMetaData();
+        return new SumoLogicOutputMetaData();
     }
 
     @Override
     public Collection<PluginModule> modules () {
-        return Collections.<PluginModule>singletonList(new SumoLogicForwarderModule());
+        return Collections.singleton(new SumoLogicOutputModule());
     }
 }

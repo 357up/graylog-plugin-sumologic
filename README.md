@@ -1,4 +1,4 @@
-# SumoLogicForwarder Plugin for Graylog
+# SumoLogicOutput Plugin for Graylog
 
 [![Build Status](https://travis-ci.org/graylog-plugin-sumologic.svg?branch=master)](https://travis-ci.org/graylog-plugin-sumologic)
 
@@ -9,7 +9,7 @@ __Use this paragraph to enter a description of your plugin.__
 Installation
 ------------
 
-[Download the plugin](https://github.com/graylog-plugin-sumologic/releases)
+[Download the plugin](https://github.com/357up/graylog-plugin-sumologic/releases)
 and place the `.jar` file in your Graylog plugin directory. The plugin directory
 is the `plugins/` folder relative from your `graylog-server` directory by default
 and can be configured in your `graylog.conf` file.

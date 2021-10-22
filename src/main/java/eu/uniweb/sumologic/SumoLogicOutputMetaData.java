@@ -15,6 +15,7 @@
  * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
 package eu.uniweb.sumologic;
+
 import org.graylog2.plugin.PluginMetaData;
 import org.graylog2.plugin.ServerStatus;
 import org.graylog2.plugin.Version;
@@ -26,27 +27,27 @@ import java.util.Set;
 /**
  * Implement the PluginMetaData interface here.
  */
-public class SumoLogicForwarderMetaData implements PluginMetaData {
+public class SumoLogicOutputMetaData implements PluginMetaData {
     private static final String PLUGIN_PROPERTIES = "eu.uniweb.graylog-plugin-sumologic/graylog-plugin.properties";
 
     @Override
     public String getUniqueId() {
-        return "eu.uniweb.SumoLogicForwarderPlugin";
+        return "eu.uniweb.sumologic.SumoLogicOutputPlugin";
     }
 
     @Override
     public String getName() {
-        return "SumoLogicForwarder";
+        return "SumoLogicOutput";
     }
 
     @Override
     public String getAuthor() {
-        return "Viesturs Eihentals <viesturs.eihentals@uniweb.eu>";
+        return "Viesturs Eihentāls <viesturs.eihentals@uniweb.eu>";
     }
 
     @Override
     public URI getURL() {
-        return URI.create("https://github.com/graylog-plugin-sumologic");
+        return URI.create("https://github.com/357up/graylog-plugin-sumologic");
     }
 
     @Override
@@ -57,7 +58,7 @@ public class SumoLogicForwarderMetaData implements PluginMetaData {
     @Override
     public String getDescription() {
         // TODO Insert correct plugin description
-        return "Description of SumoLogicForwarder plugin";
+        return "Forward messages to Sumo Logic.";
     }
 
     @Override

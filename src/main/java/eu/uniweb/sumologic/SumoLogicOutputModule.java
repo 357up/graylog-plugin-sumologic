@@ -15,6 +15,7 @@
  * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
 package eu.uniweb.sumologic;
+
 import org.graylog2.plugin.PluginConfigBean;
 import org.graylog2.plugin.PluginModule;
 
@@ -24,7 +25,7 @@ import java.util.Set;
 /**
  * Extend the PluginModule abstract class here to add you plugin to the system.
  */
-public class SumoLogicForwarderModule extends PluginModule {
+public class SumoLogicOutputModule extends PluginModule {
     /**
      * Returns all configuration beans required by this plugin.
      *
@@ -37,23 +38,7 @@ public class SumoLogicForwarderModule extends PluginModule {
 
     @Override
     protected void configure() {
-        /*
-         * Register your plugin types here.
-         *
-         * Examples:
-         *
-         * addMessageInput(Class<? extends MessageInput>);
-         * addMessageFilter(Class<? extends MessageFilter>);
-         * addMessageOutput(Class<? extends MessageOutput>);
-         * addPeriodical(Class<? extends Periodical>);
-         * addAlarmCallback(Class<? extends AlarmCallback>);
-         * addInitializer(Class<? extends Service>);
-         * addRestResource(Class<? extends PluginRestResource>);
-         *
-         *
-         * Add all configuration beans returned by getConfigBeans():
-         *
-         * addConfigBeans();
-         */
+        addMessageOutput(SumoLogicOutput.class);
+        addConfigBeans();
     }
 }
