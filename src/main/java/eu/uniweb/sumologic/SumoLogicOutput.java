@@ -74,7 +74,6 @@ public class SumoLogicOutput implements MessageOutput {
         maxQueueSizeBytes	    No	        1000000	            Maximum capacity (in bytes) of the message queue
         flushAllBeforeStopping	No	        true	            Flush all messages before stopping regardless of flushingAccuracyMs Be sure to call loggerContext.stop(); when your application stops.
         retryableHttpCodeRegex	No	        ^5.*	            Regular expression specifying which HTTP error code(s) should be retried during sending. By default, all 5xx error codes will be retried.
-     https://collectors.de.sumologic.com/receiver/v1/http/ZaVnC4dhaV2TTTY7IVxv_w0w3m0y4ZRQ1Vc8MTo2Wbut53Qn4hdiwHEBrzgJVXMo9Im278UtbjEDyh80-HkZFzde_1cDPqIHAiN6Zdn3mb_jiKq-2tD7_w==
         */
     private static final String url = "URL";
 
