@@ -93,13 +93,13 @@ public class SumoLogicOutput implements MessageOutput {
     private static final String maxFlushIntervalMs = "10000";    // Maximum interval between flushes (ms)
     private static final String flushingAccuracyMs = "250";      // How often the flusher thread looks into the message queue (ms)
 
-    private static final String Name = "null";
-    private static final String Host = "null";
-    private static final String Category = "null";
+    private static final String Name = "sourceName";
+    private static final String Host = "sourceHost";
+    private static final String Category = "sourceCategory";
 
     private static final String maxQueueSizeBytes = "1000000";
 
-    private static final String retryableHttpCodeRegex = "^5.*";
+    private static final String retryableHttpCodeRegex = "^(4|5).*";
 
     private SumoHttpSender sender;
     private SumoBufferFlusher flusher;
@@ -175,7 +175,7 @@ public class SumoLogicOutput implements MessageOutput {
             return;
         }
 
-        queue.add(message.getMessage());
+        queue.add(message.toString());
     
     }
 
