@@ -175,7 +175,7 @@ public class SumoLogicOutput implements MessageOutput {
             return;
         }
 
-        queue.add(message.getMessage());
+        queue.add(message.toString());
     
     }
 
