@@ -33,6 +33,7 @@ import org.graylog2.plugin.Message;
 import org.graylog2.plugin.inputs.annotations.ConfigClass;
 import org.graylog2.plugin.inputs.annotations.FactoryClass;
 
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import com.sumologic.http.aggregation.SumoBufferFlusher;
 import com.sumologic.http.queue.BufferWithEviction;
 import com.sumologic.http.queue.BufferWithFifoEviction;
@@ -75,6 +76,7 @@ public class SumoLogicOutput implements MessageOutput {
         flushAllBeforeStopping	No	        true	            Flush all messages before stopping regardless of flushingAccuracyMs Be sure to call loggerContext.stop(); when your application stops.
         retryableHttpCodeRegex	No	        ^5.*	            Regular expression specifying which HTTP error code(s) should be retried during sending. By default, all 5xx error codes will be retried.
         */
+
     private static final String url = "URL";
 
     private static final String proxyHost = null;
@@ -104,9 +106,10 @@ public class SumoLogicOutput implements MessageOutput {
     private SumoHttpSender sender;
     private SumoBufferFlusher flusher;
     volatile private BufferWithEviction<String> queue;
-    private static final String CLIENT_NAME = "graylog-output";
+    private static final String CLIENT_NAME = "logback-appender";
 
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
+
     @Inject
     public SumoLogicOutput(@Assisted Configuration configuration) throws MessageOutputConfigurationException {
         // Check configuration.
@@ -175,7 +178,11 @@ public class SumoLogicOutput implements MessageOutput {
             return;
         }
 
-        queue.add(message.toString());
+        try {
+            queue.add(convertToString(message));
+        } catch (Exception e) {
+            System.err.println("Unable to insert log entry into log queue.", e);
+        }
     
     }
 
@@ -211,6 +218,14 @@ public class SumoLogicOutput implements MessageOutput {
     @Override
     public boolean isRunning() {
         return isRunning.get();
+    }
+
+    private String convertToString(ILoggingEvent event) {
+        if (encoder.getCharset() == null) {
+            return encoder.getLayout().doLayout(event);
+        } else {
+            return new String(encoder.encode(event), encoder.getCharset());
+        }
     }
 
     @FactoryClass
@@ -255,19 +270,19 @@ public class SumoLogicOutput implements MessageOutput {
             );
 
             configurationRequest.addField(new TextField(
-                Name, "Source Name", "",
+                Name, "Source Name", "Http Input",
                 "Source name to appear when searching on Sumo Logic by _sourceName",
                 ConfigurationField.Optional.OPTIONAL)
             );
 
             configurationRequest.addField(new TextField(
-                Host, "Client IP Address", "",
+                Host, "Client IP Address", "Client IP Address",
                 "Source host to appear when searching on Sumo Logic by _sourceHost",
                 ConfigurationField.Optional.OPTIONAL)
             );
 
             configurationRequest.addField(new TextField(
-                Category, "Source Category", "",
+                Category, "Source Category", "Http Input",
                 "Source category to appear when searching on Sumo Logic by _sourceCategory",
                 ConfigurationField.Optional.OPTIONAL)
             );
@@ -322,7 +337,7 @@ public class SumoLogicOutput implements MessageOutput {
             ); */
 
             configurationRequest.addField(new TextField(
-                retryableHttpCodeRegex, "Retry on HTTP Status Codes (regex)", "^5.*",
+                retryableHttpCodeRegex, "Retry on HTTP Status Codes (regex)", "^(4|5).*",
                 "Regular expression specifying which HTTP error code(s) should be retried during sending. By default, all 5xx error codes will be retried.",
                 ConfigurationField.Optional.OPTIONAL)
             );
