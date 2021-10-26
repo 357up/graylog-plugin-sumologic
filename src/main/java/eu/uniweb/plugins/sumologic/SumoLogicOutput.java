@@ -79,6 +79,8 @@ public class SumoLogicOutput implements MessageOutput {
         retryableHttpCodeRegex	No	        ^5.*	            Regular expression specifying which HTTP error code(s) should be retried during sending. By default, all 5xx error codes will be retried.
         */
 
+    private LayoutWrappingEncoder<ILoggingEvent> encoder = null;
+    
     private static final String url = "URL";
 
     private static final String proxyHost = null;
@@ -111,6 +113,14 @@ public class SumoLogicOutput implements MessageOutput {
     private static final String CLIENT_NAME = "logback-appender";
 
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
+
+    public LayoutWrappingEncoder<ILoggingEvent> getEncoder() {
+        return this.encoder;
+    }
+
+    public void setEncoder(LayoutWrappingEncoder<ILoggingEvent> encoder) {
+        this.encoder = encoder;
+    }
 
     @Inject
     public SumoLogicOutput(@Assisted Configuration configuration) throws MessageOutputConfigurationException {
