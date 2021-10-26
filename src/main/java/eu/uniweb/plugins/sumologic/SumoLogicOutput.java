@@ -201,7 +201,7 @@ public class SumoLogicOutput implements MessageOutput {
     @Override
     public void write(List<Message> messages) throws Exception {
         for (Message m: messages) {
-            queue.add(convertToString(m.getMessage());
+            queue.add(convertToString(m.getMessage()));
         }
     }
                 /*  && c.stringIsSet(proxyHost)
