@@ -33,7 +33,9 @@ import org.graylog2.plugin.Message;
 import org.graylog2.plugin.inputs.annotations.ConfigClass;
 import org.graylog2.plugin.inputs.annotations.FactoryClass;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
+
 import com.sumologic.http.aggregation.SumoBufferFlusher;
 import com.sumologic.http.queue.BufferWithEviction;
 import com.sumologic.http.queue.BufferWithFifoEviction;
