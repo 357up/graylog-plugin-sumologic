@@ -178,7 +178,7 @@ public class SumoLogicOutput implements MessageOutput {
         }
 
         try {
-            queue.add(message.getMessage());
+            queue.add(message.getMessage() + "\n");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -189,7 +189,7 @@ public class SumoLogicOutput implements MessageOutput {
     public void write(List<Message> messages) throws Exception {
         for (Message m: messages) {
             try {
-                queue.add(m.getMessage());
+                queue.add(m.getMessage() + "\n");
             } catch (Exception e) {
                 e.printStackTrace();
             }
