@@ -191,7 +191,7 @@ public class SumoLogicOutput implements MessageOutput {
         }
 
         try {
-            queue.add(convertToString(message.getFields()));
+            queue.add(convertToString(message.getMessage()));
         } catch (Exception e) {
             System.err.println("Unable to insert log entry into log queue.", e);
         }
@@ -201,7 +201,7 @@ public class SumoLogicOutput implements MessageOutput {
     @Override
     public void write(List<Message> messages) throws Exception {
         for (Message m: messages) {
-            queue.add(convertToString(m.getFields()));
+            queue.add(convertToString(m.getMessage());
         }
     }
                 /*  && c.stringIsSet(proxyHost)
