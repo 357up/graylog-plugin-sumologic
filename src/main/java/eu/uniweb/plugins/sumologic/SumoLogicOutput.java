@@ -33,6 +33,9 @@ import org.graylog2.plugin.Message;
 import org.graylog2.plugin.inputs.annotations.ConfigClass;
 import org.graylog2.plugin.inputs.annotations.FactoryClass;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
+
 import com.sumologic.http.aggregation.SumoBufferFlusher;
 import com.sumologic.http.queue.BufferWithEviction;
 import com.sumologic.http.queue.BufferWithFifoEviction;
@@ -75,6 +78,8 @@ public class SumoLogicOutput implements MessageOutput {
         flushAllBeforeStopping	No	        true	            Flush all messages before stopping regardless of flushingAccuracyMs Be sure to call loggerContext.stop(); when your application stops.
         retryableHttpCodeRegex	No	        ^5.*	            Regular expression specifying which HTTP error code(s) should be retried during sending. By default, all 5xx error codes will be retried.
         */
+
+    private LayoutWrappingEncoder<ILoggingEvent> encoder = null;
     
     private static final String url = "URL";
 
@@ -108,6 +113,14 @@ public class SumoLogicOutput implements MessageOutput {
     private static final String CLIENT_NAME = "logback-appender";
 
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
+
+    public LayoutWrappingEncoder<ILoggingEvent> getEncoder() {
+        return this.encoder;
+    }
+
+    public void setEncoder(LayoutWrappingEncoder<ILoggingEvent> encoder) {
+        this.encoder = encoder;
+    }
 
     @Inject
     public SumoLogicOutput(@Assisted Configuration configuration) throws MessageOutputConfigurationException {
@@ -178,9 +191,9 @@ public class SumoLogicOutput implements MessageOutput {
         }
 
         try {
-            queue.add(message.getMessage());
+            queue.add(convertToString(message.getFields()));
         } catch (Exception e) {
-            System.err.println("Unable to insert log entry into log queue.", e);
+            e.printStackTrace();
         }
     
     }
@@ -188,7 +201,7 @@ public class SumoLogicOutput implements MessageOutput {
     @Override
     public void write(List<Message> messages) throws Exception {
         for (Message m: messages) {
-            queue.add(m.getMessage());
+            queue.add(convertToString(m.getMessage()));
         }
     }
                 /*  && c.stringIsSet(proxyHost)
@@ -217,6 +230,14 @@ public class SumoLogicOutput implements MessageOutput {
     @Override
     public boolean isRunning() {
         return isRunning.get();
+    }
+
+    private String convertToString(ILoggingEvent event) {
+        if (encoder.getCharset() == null) {
+            return encoder.getLayout().doLayout(event);
+        } else {
+            return new String(encoder.encode(event), encoder.getCharset());
+        }
     }
 
     @FactoryClass
